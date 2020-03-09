@@ -64,7 +64,7 @@ def train_kfold(idx, kfold, datapath, labelpath,  epochs, batch_size, lr, finetu
     weight_path = 'model/best_%d.h5' % idx
     ckp = ModelCheckpoint(weight_path, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True)
     vis = VizCallback(sess, y_func, valid_generator, len(valid_idx))
-    earlystop = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=0, mode='min')
+    # earlystop = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=0, mode='min')
 
     if finetune:
         print('load pretrain model')
@@ -73,7 +73,9 @@ def train_kfold(idx, kfold, datapath, labelpath,  epochs, batch_size, lr, finetu
     model.fit_generator(generator=train_generator.next_batch(),
                     steps_per_epoch=int(len(train_idx) / batch_size),
                     epochs=epochs,
-                    callbacks=[ckp, vis, earlystop],
+                    callbacks=[ckp, vis, 
+                               #earlystop
+                              ],
                     validation_data=valid_generator.next_batch(),
                     validation_steps=int(len(valid_idx) / batch_size))
     
